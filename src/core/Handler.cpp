@@ -215,7 +215,8 @@ void CServerHandler::onRequest(const Pistache::Http::Request& req, Pistache::Htt
         if (TOKEN.valid()) {
             const auto AGE = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() -
                 std::chrono::duration_cast<std::chrono::milliseconds>(TOKEN.issued().time_since_epoch()).count();
-            if (AGE <= g_pConfig->m_config.token_valid_for * 1000 && (TOKEN.fingerprint() == NRequestUtils::fingerprintForRequest(req) || g_pConfig->m_config.ignore_fingerprinting)) {
+            if (AGE <= g_pConfig->m_config.token_valid_for * 1000 &&
+                (TOKEN.fingerprint() == NRequestUtils::fingerprintForRequest(req) || g_pConfig->m_config.ignore_fingerprinting)) {
                 Debug::log(LOG, " | Action: PASS (token)");
                 g_pTrafficLogger->logTraffic(req, "PASS (token)");
                 proxyPass(req, response);
@@ -316,8 +317,8 @@ void CServerHandler::challengeSubmitted(const Pistache::Http::Request& req, Pist
             hostDomain = hostDomain.substr(lastdot + 1);
     }
 
-    response.headers().add(
-        std::make_shared<SetCookieHeader>(std::string{TOKEN_COOKIE_NAME} + "=" + TOKEN.tokenCookie() + "; Domain=" + hostDomain + "; Max-Age=" + std::to_string(g_pConfig->m_config.token_valid_for) + "; HttpOnly; Path=/; Secure; SameSite=Lax"));
+    response.headers().add(std::make_shared<SetCookieHeader>(std::string{TOKEN_COOKIE_NAME} + "=" + TOKEN.tokenCookie() + "; Domain=" + hostDomain +
+                                                             "; Max-Age=" + std::to_string(g_pConfig->m_config.token_valid_for) + "; HttpOnly; Path=/; Secure; SameSite=Lax"));
 
     if (js)
         response.send(Pistache::Http::Code::Ok, "Ok");

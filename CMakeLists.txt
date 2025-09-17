@@ -45,3 +45,22 @@ target_link_libraries(checkpoint
     fmt
     tinylates
 )
+
+# Learning/Debug-friendly options
+option(CHECKPOINT_ENABLE_SANITIZERS "Enable Address/Undefined sanitizers (Debug only)" ON)
+option(CHECKPOINT_STRICT_WARNINGS "Enable -Wall -Wextra -Werror in Debug" ON)
+
+if(CMAKE_BUILD_TYPE MATCHES "Debug")
+    if(CHECKPOINT_STRICT_WARNINGS)
+        add_compile_options(-Wall -Wextra -Werror)
+    endif()
+    if(CHECKPOINT_ENABLE_SANITIZERS)
+        add_compile_options(-fsanitize=address,undefined -fno-omit-frame-pointer)
+        add_link_options(-fsanitize=address,undefined)
+        if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+            # Extra useful sanitizers with Clang
+            add_compile_options(-fsanitize=float-divide-by-zero,nullability)
+            add_link_options(-fsanitize=float-divide-by-zero,nullability)
+        endif()
+    endif()
+endif()
