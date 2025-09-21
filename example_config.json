@@ -1,0 +1,21 @@
+{
+    "port": 8080,
+    "forward_address": "127.0.0.1:3000",
+    "data_dir": "./data",
+    "html_dir": "./html",
+    "max_request_size": 10000000,
+    "git_host": false,
+    "proxy_timeout_sec": 120,
+    "trace_logging": false,
+    "default_challenge_difficulty": 4,
+    "token_valid_for": 3600,
+    "ignore_fingerprinting": false,
+    "async_proxy": true,
+    "rules": [],
+    "proxy_rules": [],
+    "logging": {
+        "log_traffic": false,
+        "traffic_log_schema": "",
+        "traffic_log_file": ""
+    }
+}

@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.19)
 
+# Set CMake policies to avoid warnings
+cmake_policy(SET CMP0077 NEW)  # option() honors normal variables
+if(POLICY CMP0169)
+    cmake_policy(SET CMP0169 NEW)  # FetchContent_MakeAvailable
+endif()
+
 file(READ "${CMAKE_SOURCE_DIR}/VERSION" VER_RAW)
 string(STRIP ${VER_RAW} VER)
 
@@ -10,8 +16,16 @@ project(
 )
 
 set(CHECKPOINT_VERSION ${VER})
-set(PISTACHE_BUILD_TESTS OFF)
-set(PISTACHE_BUILD_FUZZ OFF)
+
+# Set Pistache options before adding subdirectory
+set(PISTACHE_BUILD_TESTS OFF CACHE BOOL "Build Pistache tests" FORCE)
+set(PISTACHE_BUILD_FUZZ OFF CACHE BOOL "Build Pistache fuzzing" FORCE)
+set(PISTACHE_BUILD_EXAMPLES OFF CACHE BOOL "Build Pistache examples" FORCE)
+set(PISTACHE_BUILD_DOCS OFF CACHE BOOL "Build Pistache docs" FORCE)
+set(PISTACHE_USE_RAPIDJSON OFF CACHE BOOL "Use RapidJSON" FORCE)
+
+# RapidJSON fix - set minimum version policy
+set(CMAKE_POLICY_DEFAULT_CMP0000 NEW)
 
 add_subdirectory(subprojects/pistache)
 add_subdirectory(subprojects/fmt)
